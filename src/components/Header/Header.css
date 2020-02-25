@@ -1,0 +1,17 @@
+.header {
+  display: flex;
+  margin-top: 10px;
+
+  align-items: baseline;
+}
+
+.header .order-result {
+  margin-left: auto;
+}
+
+.header__logo-link {
+  font-size: 32px;
+  line-height: 38px;
+  color: #000000;
+  font-weight: 700;
+}

@@ -1,0 +1,7 @@
+.shoppingcart-table th {
+  vertical-align: middle;
+}
+
+.hoppingcart-table__price-container {
+  text-align: right;
+}

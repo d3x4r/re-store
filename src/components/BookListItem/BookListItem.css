@@ -1,0 +1,25 @@
+.booklist-item {
+  display: flex;
+  padding: 15px;
+}
+
+.booklist-item__second-row {
+  padding: 15px;
+  flex-grow: 1;
+}
+
+.booklist-item__description {
+  font-size: 16px;
+  line-height: 18px;
+
+  color: #000000;
+}
+
+.booklist-item__price {
+  font-size: 23px;
+  line-height: 28px;
+}
+
+.booklist-item__order-button {
+  margin-left: 10px;
+}

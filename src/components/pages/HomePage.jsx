@@ -1,10 +1,11 @@
 import React from 'react';
 import BookList from '../BookList';
+import ShoppingCartTable from '../ShoppingCartTable';
 
 const HomePage = () => (
   <>
-    <div>Home Page</div>
     <BookList books={[]} />
+    <ShoppingCartTable />
   </>
 );
 
