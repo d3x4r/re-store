@@ -1,5 +1,4 @@
 /* eslint-disable no-shadow */
-/* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -17,25 +16,9 @@ import './BookList.css';
 
 class BookList extends Component {
   componentDidMount() {
-    this.downloadBooks();
+    const { fetchBooks } = this.props;
+    fetchBooks();
   }
-
-  downloadBooks = async () => {
-    const {
-      bookstoreService,
-      booksLoaded,
-      startBooksLoaded,
-      onBooksRequestError,
-    } = this.props;
-    startBooksLoaded();
-
-    try {
-      const books = await bookstoreService.getBooks();
-      booksLoaded(books);
-    } catch (err) {
-      onBooksRequestError(err);
-    }
-  };
 
   render() {
     // eslint-disable-next-line react/prop-types
@@ -65,10 +48,20 @@ const mapStateToProps = ({ books, booksLoading, booksRequiestError }) => {
   return { books, booksLoading, booksRequiestError };
 };
 
-const mapDispatchToProps = {
-  booksLoaded,
-  startBooksLoaded,
-  onBooksRequestError,
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { bookstoreService } = ownProps;
+  return {
+    fetchBooks: async () => {
+      dispatch(startBooksLoaded());
+
+      try {
+        const books = await bookstoreService.getBooks();
+        dispatch(booksLoaded(books));
+      } catch (err) {
+        dispatch(onBooksRequestError(err));
+      }
+    },
+  };
 };
 
 BookList.defaultProps = {
@@ -77,14 +70,10 @@ BookList.defaultProps = {
 
 BookList.propTypes = {
   books: PropTypes.instanceOf(Array),
-  bookstoreService: PropTypes.instanceOf(Object).isRequired,
-  booksLoaded: PropTypes.func.isRequired,
-  startBooksLoaded: PropTypes.func.isRequired,
   booksLoading: PropTypes.bool.isRequired,
-  onBooksRequestError: PropTypes.func.isRequired,
+  fetchBooks: PropTypes.func.isRequired,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(WithBookstoreService(BookList));
+export default WithBookstoreService(
+  connect(mapStateToProps, mapDispatchToProps)(BookList),
+);
