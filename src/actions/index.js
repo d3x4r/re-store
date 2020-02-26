@@ -5,11 +5,10 @@ export const booksLoaded = (books) => ({
 });
 
 export const startBooksLoaded = () => ({
-  type: 'START_BOOKS_LOADING',
-  payload: '',
+  type: 'BOOKS_REQUEST',
 });
 
-// export const endBooksLoaded = () => ({
-//   type: 'END_BOOKS_LOADING',
-//   payload: false,
-// });
+export const onBooksRequestError = (error) => ({
+  type: 'BOOKS_REQUEST_ERROR',
+  payload: error,
+});

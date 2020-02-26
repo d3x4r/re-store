@@ -1,12 +1,18 @@
+/* eslint-disable no-shadow */
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { WithBookstoreService } from '../hoc';
-import { booksLoaded, startBooksLoaded } from '../../actions';
+import {
+  booksLoaded,
+  startBooksLoaded,
+  onBooksRequestError,
+} from '../../actions';
 import BookListItem from '../BookListItem';
 import Spinner from '../Spinner';
+import ErrorEndicator from '../ErrorEndicator';
 import './BookList.css';
 
 class BookList extends Component {
@@ -15,18 +21,32 @@ class BookList extends Component {
   }
 
   downloadBooks = async () => {
-    // eslint-disable-next-line no-shadow
-    const { bookstoreService, booksLoaded, startBooksLoaded } = this.props;
+    const {
+      bookstoreService,
+      booksLoaded,
+      startBooksLoaded,
+      onBooksRequestError,
+    } = this.props;
     startBooksLoaded();
-    const books = await bookstoreService.getBooks();
-    booksLoaded(books);
+
+    try {
+      const books = await bookstoreService.getBooks();
+      booksLoaded(books);
+    } catch (err) {
+      onBooksRequestError(err);
+    }
   };
 
   render() {
-    const { books, booksLoading } = this.props;
+    // eslint-disable-next-line react/prop-types
+    const { books, booksLoading, booksRequiestError } = this.props;
 
     if (booksLoading) {
       return <Spinner />;
+    }
+
+    if (booksRequiestError) {
+      return <ErrorEndicator />;
     }
 
     return (
@@ -41,13 +61,14 @@ class BookList extends Component {
   }
 }
 
-const mapStateToProps = ({ books, booksLoading }) => {
-  return { books, booksLoading };
+const mapStateToProps = ({ books, booksLoading, booksRequiestError }) => {
+  return { books, booksLoading, booksRequiestError };
 };
 
 const mapDispatchToProps = {
   booksLoaded,
   startBooksLoaded,
+  onBooksRequestError,
 };
 
 BookList.defaultProps = {
@@ -60,6 +81,7 @@ BookList.propTypes = {
   booksLoaded: PropTypes.func.isRequired,
   startBooksLoaded: PropTypes.func.isRequired,
   booksLoading: PropTypes.bool.isRequired,
+  onBooksRequestError: PropTypes.func.isRequired,
 };
 
 export default connect(

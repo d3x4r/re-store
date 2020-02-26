@@ -15,3 +15,7 @@
   color: #000000;
   font-weight: 700;
 }
+
+.header__logo-link:hover {
+  text-decoration: none;
+}
