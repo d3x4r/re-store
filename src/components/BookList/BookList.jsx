@@ -4,17 +4,23 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { WithBookstoreService } from '../hoc';
-import {
-  booksLoaded,
-  startBooksLoaded,
-  onBooksRequestError,
-} from '../../actions';
+import { fetchBooks, addBookToCart } from '../../actions';
 import BookListItem from '../BookListItem';
 import Spinner from '../Spinner';
 import ErrorEndicator from '../ErrorEndicator';
 import './BookList.css';
 
-class BookList extends Component {
+const BookList = ({ books, onAddToCart }) => (
+  <ul className="book-list">
+    {books.map((book) => (
+      <li key={book.id} className="book-list__item">
+        <BookListItem book={book} onAddToCart={onAddToCart} />
+      </li>
+    ))}
+  </ul>
+);
+
+class BookListContainer extends Component {
   componentDidMount() {
     const { fetchBooks } = this.props;
     fetchBooks();
@@ -22,7 +28,7 @@ class BookList extends Component {
 
   render() {
     // eslint-disable-next-line react/prop-types
-    const { books, booksLoading, booksRequiestError } = this.props;
+    const { books, booksLoading, booksRequiestError, onAddToCart } = this.props;
 
     if (booksLoading) {
       return <Spinner />;
@@ -32,15 +38,7 @@ class BookList extends Component {
       return <ErrorEndicator />;
     }
 
-    return (
-      <ul className="book-list">
-        {books.map((book) => (
-          <li key={book.id} className="book-list__item">
-            <BookListItem book={book} />
-          </li>
-        ))}
-      </ul>
-    );
+    return <BookList books={books} onAddToCart={onAddToCart} />;
   }
 }
 
@@ -51,16 +49,8 @@ const mapStateToProps = ({ books, booksLoading, booksRequiestError }) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { bookstoreService } = ownProps;
   return {
-    fetchBooks: async () => {
-      dispatch(startBooksLoaded());
-
-      try {
-        const books = await bookstoreService.getBooks();
-        dispatch(booksLoaded(books));
-      } catch (err) {
-        dispatch(onBooksRequestError(err));
-      }
-    },
+    fetchBooks: fetchBooks(bookstoreService, dispatch),
+    onAddToCart: (id) => () => dispatch(addBookToCart(id)),
   };
 };
 
@@ -70,10 +60,19 @@ BookList.defaultProps = {
 
 BookList.propTypes = {
   books: PropTypes.instanceOf(Array),
+  onAddToCart: PropTypes.func.isRequired,
+};
+
+BookListContainer.defaultProps = {
+  books: [],
+};
+
+BookListContainer.propTypes = {
+  books: PropTypes.instanceOf(Array),
   booksLoading: PropTypes.bool.isRequired,
   fetchBooks: PropTypes.func.isRequired,
 };
 
 export default WithBookstoreService(
-  connect(mapStateToProps, mapDispatchToProps)(BookList),
+  connect(mapStateToProps, mapDispatchToProps)(BookListContainer),
 );

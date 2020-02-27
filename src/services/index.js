@@ -12,14 +12,13 @@ export default class BookstoreServive {
       title: 'Second Book',
       author: 'Seconds Book author',
       price: 12,
-      description:
-        'Seconds book description, Seconds book description, Seconds book description',
+      description: 'Seconds book description, Seconds book description, Seconds book description',
     },
   ];
 
   getBooks = () => {
     return new Promise((resolve) => {
-      setTimeout(() => resolve(this.data), 2700);
+      setTimeout(() => resolve(this.data), 700);
     });
   };
 }
