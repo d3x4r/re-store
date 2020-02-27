@@ -42,7 +42,11 @@ class BookListContainer extends Component {
   }
 }
 
-const mapStateToProps = ({ books, booksLoading, booksRequiestError }) => {
+// const mapStateToProps = ({ books, booksLoading, booksRequiestError }) => {
+//   return { books, booksLoading, booksRequiestError };
+// };
+
+const mapStateToProps = ({ bookList: { books, booksLoading, booksRequiestError } }) => {
   return { books, booksLoading, booksRequiestError };
 };
 

@@ -57,7 +57,9 @@ ShoppingCartTable.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  const { cartItems, totalPrice } = state;
+  const {
+    cart: { cartItems, totalPrice },
+  } = state;
   return {
     items: cartItems,
     total: totalPrice,
