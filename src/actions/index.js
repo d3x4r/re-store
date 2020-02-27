@@ -28,7 +28,7 @@ export const deleteBookFromCart = (id) => ({
   payload: id,
 });
 
-export const fetchBooks = (bookstoreService, dispatch) => async () => {
+export const fetchBooks = (bookstoreService) => () => async (dispatch) => {
   dispatch(startBooksLoaded());
 
   try {

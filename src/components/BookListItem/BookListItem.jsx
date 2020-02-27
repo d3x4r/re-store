@@ -17,7 +17,7 @@ const BookListItem = ({ book, onAddToCart }) => {
         <button
           className="booklist-item__order-button btn btn-primary btn-sm"
           type="button"
-          onClick={onAddToCart(id)}
+          onClick={() => onAddToCart(id)}
         >
           <i className="fa fa-cart-arrow-down" aria-hidden="true" />
         </button>

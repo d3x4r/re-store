@@ -1,6 +1,6 @@
-const getUpdatedCart = (cart, selectedItemIndex, updatedItem) => {
-  return cart.reduce((acc, cartItem, index) => {
-    if (selectedItemIndex !== index) {
+const updateItemInCart = (cart, selectedItemIndex, updatedItem) => {
+  return cart.reduce((acc, cartItem, cartItemIndex) => {
+    if (selectedItemIndex !== cartItemIndex) {
       return [...acc, cartItem];
     }
 
@@ -16,7 +16,7 @@ const getCartWithUpdatedItem = (cart, index) => {
     count: count + 1,
     total: total + total / count,
   };
-  return getUpdatedCart(cart, index, updatedBookData);
+  return updateItemInCart(cart, index, updatedBookData);
 };
 
 const getCartWithAddedItem = (books, selectedBookId, cartItems) => {
@@ -40,7 +40,7 @@ const getCartWithoutItem = (cart, index) => {
     count: count - 1,
     total: total - total / count,
   };
-  return getUpdatedCart(cart, index, updatedBookData);
+  return updateItemInCart(cart, index, updatedBookData);
 };
 
 const updateCart = (state, action) => {

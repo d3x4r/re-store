@@ -28,6 +28,7 @@ const updateBookList = (state, action) => {
         booksLoading: false,
         booksRequiestError: action.payload,
       };
+
     default:
       return state.bookList;
   }

@@ -1,5 +1,6 @@
 /* eslint-disable no-shadow */
 import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -42,20 +43,20 @@ class BookListContainer extends Component {
   }
 }
 
-// const mapStateToProps = ({ books, booksLoading, booksRequiestError }) => {
-//   return { books, booksLoading, booksRequiestError };
-// };
-
 const mapStateToProps = ({ bookList: { books, booksLoading, booksRequiestError } }) => {
   return { books, booksLoading, booksRequiestError };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { bookstoreService } = ownProps;
-  return {
-    fetchBooks: fetchBooks(bookstoreService, dispatch),
-    onAddToCart: (id) => () => dispatch(addBookToCart(id)),
-  };
+
+  return bindActionCreators(
+    {
+      fetchBooks: fetchBooks(bookstoreService),
+      onAddToCart: addBookToCart,
+    },
+    dispatch,
+  );
 };
 
 BookList.defaultProps = {
