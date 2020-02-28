@@ -1,3 +1,8 @@
+const getBookPrice = (booksList, bookId) => {
+  const { price } = booksList.find(({ id }) => id === bookId);
+  return price;
+};
+
 const updateItemInCart = (cart, selectedItemIndex, updatedItem) => {
   return cart.reduce((acc, cartItem, cartItemIndex) => {
     if (selectedItemIndex !== cartItemIndex) {
@@ -48,30 +53,40 @@ const updateCart = (state, action) => {
     return {
       cartItems: [],
       totalPrice: 0,
+      totalCount: 0,
     };
   }
   switch (action.type) {
     case 'ADD_BOOK_TO_CART': {
       const {
         bookList: { books },
-        cart: { cartItems },
+        cart: { cartItems, totalPrice, totalCount },
       } = state;
       const selectedBookId = action.payload;
 
       const indexBookInCart = cartItems.findIndex(({ id }) => id === selectedBookId);
+      const currentBookPrice = getBookPrice(books, selectedBookId);
+
+      const updatedTotalData = {
+        totalPrice: totalPrice + currentBookPrice,
+        totalCount: totalCount + 1,
+      };
 
       if (indexBookInCart >= 0) {
         const cartWithUpdatedItem = getCartWithUpdatedItem(cartItems, indexBookInCart);
-        return { totalPrice: 0, cartItems: cartWithUpdatedItem };
+
+        return { ...updatedTotalData, cartItems: cartWithUpdatedItem };
       }
 
       const cartWithAddedItem = getCartWithAddedItem(books, selectedBookId, cartItems);
-      return { totalPrice: 0, cartItems: cartWithAddedItem };
+
+      return { ...updatedTotalData, cartItems: cartWithAddedItem };
     }
 
     case 'REMOVE_BOOK_FROM_CART': {
       const {
-        cart: { cartItems },
+        bookList: { books },
+        cart: { cartItems, totalPrice, totalCount },
       } = state;
       const selectedBookId = action.payload;
 
@@ -79,21 +94,37 @@ const updateCart = (state, action) => {
       const currentCartItem = cartItems[indexBookInCart];
       const { count } = currentCartItem;
 
+      const currentBookPrice = getBookPrice(books, selectedBookId);
+
       if (count === 1) {
-        return { totalPrice: 0, cartItems };
+        return { totalPrice, cartItems, totalCount };
       }
+
+      const updatedTotalData = {
+        totalPrice: totalPrice - currentBookPrice,
+        totalCount: totalCount - 1,
+      };
+
       const cartWithoutItem = getCartWithoutItem(cartItems, indexBookInCart);
-      return { totalPrice: 0, cartItems: cartWithoutItem };
+
+      return { ...updatedTotalData, cartItems: cartWithoutItem };
     }
 
     case 'DELETE_BOOK_FROM_CART': {
       const {
-        cart: { cartItems },
+        cart: { cartItems, totalPrice, totalCount },
       } = state;
       const selectedBookId = action.payload;
 
       const filteredCart = cartItems.filter(({ id }) => id !== selectedBookId);
-      return { totalPrice: 0, cartItems: filteredCart };
+      const { total, count } = cartItems.find(({ id }) => id === selectedBookId);
+
+      const updatedTotalData = {
+        totalPrice: totalPrice - total,
+        totalCount: totalCount - count,
+      };
+
+      return { ...updatedTotalData, cartItems: filteredCart };
     }
     default:
       return state.cart;

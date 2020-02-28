@@ -1,3 +1,7 @@
 .order-result__button {
   margin-right: 10px;
 }
+
+.order-result__count {
+  font-weight: 700;
+}
