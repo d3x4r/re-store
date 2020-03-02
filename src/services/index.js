@@ -14,6 +14,20 @@ export default class BookstoreServive {
       price: 12,
       description: 'Seconds book description, Seconds book description, Seconds book description',
     },
+    {
+      id: 3,
+      title: 'Third Book',
+      author: 'Third Book author',
+      price: 31,
+      description: 'Third book description, Third book description, Third book description',
+    },
+    {
+      id: 4,
+      title: 'Fourth Book',
+      author: 'Fourth Book author',
+      price: 20,
+      description: 'Fourth book description, Fourth book description, Fourth book description',
+    },
   ];
 
   getBooks = () => {
