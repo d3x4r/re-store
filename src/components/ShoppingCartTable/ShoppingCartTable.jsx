@@ -4,9 +4,14 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import './ShoppingCartTable.css';
 import CartActions from '../CartActions';
-import { addBookToCart, removeBookFromCart, deleteBookFromCart } from '../../actions';
+import {
+  addBookToCart,
+  removeBookFromCart,
+  deleteBookFromCart,
+  setActionCartMessage,
+} from '../../actions';
 
-const ShoppingCartTable = ({ items, total, actionHandlers }) => {
+const ShoppingCartTable = ({ items, total, actionHandlers, setActionCartMessage, timerId }) => {
   const renderRow = (item, i) => {
     const { name, total, count, id } = item;
     return (
@@ -16,7 +21,12 @@ const ShoppingCartTable = ({ items, total, actionHandlers }) => {
         <td>{count}</td>
         <td>{total}</td>
         <td>
-          <CartActions actionHandlers={actionHandlers} itemId={id} />
+          <CartActions
+            actionHandlers={actionHandlers}
+            itemId={id}
+            setActionCartMessage={setActionCartMessage}
+            timerId={timerId}
+          />
         </td>
       </tr>
     );
@@ -54,31 +64,38 @@ ShoppingCartTable.propTypes = {
   items: PropTypes.instanceOf(Array),
   total: PropTypes.number,
   actionHandlers: PropTypes.instanceOf(Object).isRequired,
+  setActionCartMessage: PropTypes.func.isRequired,
+  timerId: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = (state) => {
   const {
     cart: { cartItems, totalPrice },
+    uiState: {
+      cartActionMessage: { timerId },
+    },
   } = state;
   return {
     items: cartItems,
     total: totalPrice,
+    timerId,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     actionHandlers: {
-      onIncrease: (id) => () => {
+      onIncrease: (id) => {
         dispatch(addBookToCart(id));
       },
-      onDecrease: (id) => () => {
+      onDecrease: (id) => {
         dispatch(removeBookFromCart(id));
       },
-      onDelete: (id) => () => {
+      onDelete: (id) => {
         dispatch(deleteBookFromCart(id));
       },
     },
+    setActionCartMessage: (message, timerId) => dispatch(setActionCartMessage(message, timerId)),
   };
 };
 

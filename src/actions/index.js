@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 const startBooksLoaded = () => ({
   type: 'FETCH_BOOKS_REQUEST',
 });
@@ -11,6 +10,14 @@ const booksLoaded = (books) => ({
 const onBooksRequestError = (error) => ({
   type: 'FETCH_BOOKS_FAILURE',
   payload: error,
+});
+
+const cartActionMessage = (timerId, visible) => ({
+  type: 'SET_CART_ACTION_MESSAGE',
+  payload: {
+    timerId,
+    visible,
+  },
 });
 
 export const addBookToCart = (id) => ({
@@ -30,11 +37,21 @@ export const deleteBookFromCart = (id) => ({
 
 export const fetchBooks = (bookstoreService) => () => async (dispatch) => {
   dispatch(startBooksLoaded());
-
   try {
     const books = await bookstoreService.getBooks();
     dispatch(booksLoaded(books));
   } catch (err) {
     dispatch(onBooksRequestError(err));
   }
+};
+
+export const setActionCartMessage = (timerId = 0) => async (dispatch) => {
+  if (timerId) {
+    clearTimeout(timerId);
+  }
+  const timerID = setTimeout(() => {
+    dispatch(cartActionMessage(0, false));
+  }, 3000);
+
+  dispatch(cartActionMessage(timerID, true));
 };

@@ -5,17 +5,22 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { WithBookstoreService } from '../hoc';
-import { fetchBooks, addBookToCart } from '../../actions';
+import { fetchBooks, addBookToCart, setActionCartMessage } from '../../actions';
 import BookListItem from '../BookListItem';
 import Spinner from '../Spinner';
 import ErrorEndicator from '../ErrorEndicator';
 import './BookList.css';
 
-const BookList = ({ books, onAddToCart }) => (
+const BookList = ({ books, onAddToCart, setActionMessage, timerId }) => (
   <ul className="book-list">
     {books.map((book) => (
       <li key={book.id} className="book-list__item">
-        <BookListItem book={book} onAddToCart={onAddToCart} />
+        <BookListItem
+          book={book}
+          onAddToCart={onAddToCart}
+          setActionMessage={setActionMessage}
+          timerId={timerId}
+        />
       </li>
     ))}
   </ul>
@@ -28,8 +33,14 @@ class BookListContainer extends Component {
   }
 
   render() {
-    // eslint-disable-next-line react/prop-types
-    const { books, booksLoading, booksRequiestError, onAddToCart } = this.props;
+    const {
+      books,
+      booksLoading,
+      booksRequiestError,
+      onAddToCart,
+      setActionMessage,
+      timerId,
+    } = this.props;
 
     if (booksLoading) {
       return <Spinner />;
@@ -38,22 +49,35 @@ class BookListContainer extends Component {
     if (booksRequiestError) {
       return <ErrorEndicator />;
     }
-
-    return <BookList books={books} onAddToCart={onAddToCart} />;
+    return (
+      <BookList
+        books={books}
+        onAddToCart={onAddToCart}
+        setActionMessage={setActionMessage}
+        timerId={timerId}
+      />
+    );
   }
 }
 
-const mapStateToProps = ({ bookList: { books, booksLoading, booksRequiestError } }) => {
-  return { books, booksLoading, booksRequiestError };
+const mapStateToProps = (props) => {
+  const {
+    bookList: { books, booksLoading, booksRequiestError },
+    uiState: {
+      cartActionMessage: { timerId },
+    },
+  } = props;
+
+  return { books, booksLoading, booksRequiestError, timerId };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   const { bookstoreService } = ownProps;
-
   return bindActionCreators(
     {
       fetchBooks: fetchBooks(bookstoreService),
       onAddToCart: addBookToCart,
+      setActionMessage: setActionCartMessage,
     },
     dispatch,
   );
@@ -66,16 +90,23 @@ BookList.defaultProps = {
 BookList.propTypes = {
   books: PropTypes.instanceOf(Array),
   onAddToCart: PropTypes.func.isRequired,
+  setActionMessage: PropTypes.func.isRequired,
+  timerId: PropTypes.number.isRequired,
 };
 
 BookListContainer.defaultProps = {
   books: [],
+  booksRequiestError: null,
 };
 
 BookListContainer.propTypes = {
   books: PropTypes.instanceOf(Array),
   booksLoading: PropTypes.bool.isRequired,
   fetchBooks: PropTypes.func.isRequired,
+  booksRequiestError: PropTypes.bool,
+  onAddToCart: PropTypes.func.isRequired,
+  setActionMessage: PropTypes.func.isRequired,
+  timerId: PropTypes.number.isRequired,
 };
 
 export default WithBookstoreService(

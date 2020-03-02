@@ -1,5 +1,6 @@
 .header {
   display: flex;
+  /* position: relative; */
   margin-top: 10px;
 
   align-items: baseline;

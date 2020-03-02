@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './BookListItem.css';
 
-const BookListItem = ({ book, onAddToCart }) => {
+const BookListItem = ({ book, onAddToCart, timerId, setActionMessage }) => {
   const { title, author, description, price, id } = book;
   return (
     <section className="booklist-item">
@@ -17,7 +17,10 @@ const BookListItem = ({ book, onAddToCart }) => {
         <button
           className="booklist-item__order-button btn btn-primary btn-sm"
           type="button"
-          onClick={() => onAddToCart(id)}
+          onClick={() => {
+            onAddToCart(id);
+            setActionMessage(timerId);
+          }}
         >
           <i className="fa fa-cart-arrow-down" aria-hidden="true" />
         </button>
@@ -29,6 +32,8 @@ const BookListItem = ({ book, onAddToCart }) => {
 BookListItem.propTypes = {
   book: PropTypes.instanceOf(Object).isRequired,
   onAddToCart: PropTypes.func.isRequired,
+  timerId: PropTypes.number.isRequired,
+  setActionMessage: PropTypes.func.isRequired,
 };
 
 export default BookListItem;

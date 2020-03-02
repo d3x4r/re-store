@@ -54,8 +54,10 @@ const updateCart = (state, action) => {
       cartItems: [],
       totalPrice: 0,
       totalCount: 0,
+      cartLastAction: '',
     };
   }
+
   switch (action.type) {
     case 'ADD_BOOK_TO_CART': {
       const {
@@ -70,6 +72,7 @@ const updateCart = (state, action) => {
       const updatedTotalData = {
         totalPrice: totalPrice + currentBookPrice,
         totalCount: totalCount + 1,
+        cartLastAction: 'added',
       };
 
       if (indexBookInCart >= 0) {
@@ -103,6 +106,7 @@ const updateCart = (state, action) => {
       const updatedTotalData = {
         totalPrice: totalPrice - currentBookPrice,
         totalCount: totalCount - 1,
+        cartLastAction: 'removed',
       };
 
       const cartWithoutItem = getCartWithoutItem(cartItems, indexBookInCart);
@@ -122,10 +126,12 @@ const updateCart = (state, action) => {
       const updatedTotalData = {
         totalPrice: totalPrice - total,
         totalCount: totalCount - count,
+        cartLastAction: 'deleted',
       };
 
       return { ...updatedTotalData, cartItems: filteredCart };
     }
+
     default:
       return state.cart;
   }
