@@ -32,6 +32,10 @@ const ShoppingCartTable = ({ items, total, actionHandlers, setActionCartMessage,
     );
   };
 
+  if (items.length === 0) {
+    return <p>The cart is empty</p>;
+  }
+
   return (
     <section className="shoppingcart-table">
       <h2 className="shoppingcart-table">Your Order</h2>
