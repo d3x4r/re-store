@@ -35,9 +35,8 @@ pipeline {
         stage('deployment') {
             steps {
                 echo "*******************************************************************"
+                load "C:/.env"
                 echo "start of deployment"
-                sh '$env:SURGE_LOGIN = Get-Content "C:\\login"'
-                sh "$env:SURGE_TOKEN = Get-Content 'C:\\token'"
                 sh "surge --project ./build --domain r-rstore.surge.sh"
                 echo "end of deployment"
                 echo "*******************************************************************"
