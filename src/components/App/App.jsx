@@ -9,6 +9,7 @@ const App = () => {
     <>
       <Header />
       <Switch>
+        <div></div>
         <Route path="/cart" component={CartPage} />
         <Route path="/" component={HomePage} />
       </Switch>
