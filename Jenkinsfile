@@ -37,7 +37,7 @@ pipeline {
                 echo "*******************************************************************"
                 load "C:/.env"
                 echo "start of deployment"
-                sh "surge --project ./build --domain r-rstore.surge.sh"
+                bat "surge --project ./build --domain r-rstore.surge.sh"
                 echo "end of deployment"
                 echo "*******************************************************************"
             }
